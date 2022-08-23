@@ -1,0 +1,149 @@
+2022-08-22 22:14:07,315 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:14:07,315 [INFO] Scheduler started
+2022-08-22 22:14:07,319 [INFO] Started server process [11963]
+2022-08-22 22:14:07,320 [INFO] Waiting for application startup.
+2022-08-22 22:14:07,320 [INFO] Application startup complete.
+2022-08-22 22:14:07,320 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:14:12,311 [INFO] Running job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:14:12 CEST)" (scheduled at 2022-08-22 22:14:12.310529+02:00)
+2022-08-22 22:14:16,398 [INFO] Job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:14:17 CEST)" executed successfully
+2022-08-22 22:14:17,313 [INFO] Running job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:14:22 CEST)" (scheduled at 2022-08-22 22:14:17.310529+02:00)
+2022-08-22 22:14:18,437 [INFO] Job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:14:22 CEST)" executed successfully
+2022-08-22 22:14:18,804 [INFO] Shutting down
+2022-08-22 22:14:18,906 [INFO] Waiting for application shutdown.
+2022-08-22 22:14:18,907 [INFO] Application shutdown complete.
+2022-08-22 22:14:18,907 [INFO] Finished server process [11963]
+2022-08-22 22:14:41,771 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:14:41,771 [INFO] Scheduler started
+2022-08-22 22:14:41,776 [INFO] Started server process [12006]
+2022-08-22 22:14:41,776 [INFO] Waiting for application startup.
+2022-08-22 22:14:41,776 [INFO] Application startup complete.
+2022-08-22 22:14:41,776 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:16:15,277 [INFO] Shutting down
+2022-08-22 22:16:15,379 [INFO] Waiting for application shutdown.
+2022-08-22 22:16:15,380 [INFO] Application shutdown complete.
+2022-08-22 22:16:15,380 [INFO] Finished server process [12006]
+2022-08-22 22:16:24,500 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:16:24,501 [INFO] Scheduler started
+2022-08-22 22:16:24,505 [INFO] Started server process [12095]
+2022-08-22 22:16:24,505 [INFO] Waiting for application startup.
+2022-08-22 22:16:24,505 [INFO] Application startup complete.
+2022-08-22 22:16:24,506 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:16:38,176 [INFO] Shutting down
+2022-08-22 22:16:38,277 [INFO] Waiting for application shutdown.
+2022-08-22 22:16:38,278 [INFO] Application shutdown complete.
+2022-08-22 22:16:38,279 [INFO] Finished server process [12095]
+2022-08-22 22:16:39,299 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:16:39,299 [INFO] Scheduler started
+2022-08-22 22:16:39,304 [INFO] Started server process [12145]
+2022-08-22 22:16:39,304 [INFO] Waiting for application startup.
+2022-08-22 22:16:39,304 [INFO] Application startup complete.
+2022-08-22 22:16:39,305 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:16:49,761 [INFO] Shutting down
+2022-08-22 22:16:49,863 [INFO] Waiting for application shutdown.
+2022-08-22 22:16:49,864 [INFO] Application shutdown complete.
+2022-08-22 22:16:49,865 [INFO] Finished server process [12145]
+2022-08-22 22:22:48,479 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:22:48,480 [INFO] Scheduler started
+2022-08-22 22:22:48,484 [INFO] Started server process [12743]
+2022-08-22 22:22:48,484 [INFO] Waiting for application startup.
+2022-08-22 22:22:48,484 [INFO] Application startup complete.
+2022-08-22 22:22:48,484 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:22:50,295 [INFO] Shutting down
+2022-08-22 22:22:50,396 [INFO] Waiting for application shutdown.
+2022-08-22 22:22:50,397 [INFO] Application shutdown complete.
+2022-08-22 22:22:50,397 [INFO] Finished server process [12743]
+2022-08-22 22:24:03,305 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:24:03,305 [INFO] Scheduler started
+2022-08-22 22:24:03,309 [INFO] Started server process [12798]
+2022-08-22 22:24:03,310 [INFO] Waiting for application startup.
+2022-08-22 22:24:03,310 [INFO] Application startup complete.
+2022-08-22 22:24:03,310 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:24:05,526 [INFO] Shutting down
+2022-08-22 22:24:05,627 [INFO] Waiting for application shutdown.
+2022-08-22 22:24:05,628 [INFO] Application shutdown complete.
+2022-08-22 22:24:05,628 [INFO] Finished server process [12798]
+2022-08-22 22:24:26,193 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:24:26,193 [INFO] Scheduler started
+2022-08-22 22:24:26,197 [INFO] Started server process [12842]
+2022-08-22 22:24:26,197 [INFO] Waiting for application startup.
+2022-08-22 22:24:26,197 [INFO] Application startup complete.
+2022-08-22 22:24:26,198 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:24:31,189 [INFO] Running job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:24:31 CEST)" (scheduled at 2022-08-22 22:24:31.188242+02:00)
+2022-08-22 22:24:36,191 [WARNING] Execution of job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:24:36 CEST)" skipped: maximum number of running instances reached (1)
+2022-08-22 22:24:36,850 [INFO] Job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:24:41 CEST)" executed successfully
+2022-08-22 22:24:41,191 [INFO] Running job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:24:46 CEST)" (scheduled at 2022-08-22 22:24:41.188242+02:00)
+2022-08-22 22:24:42,354 [INFO] Job "fetch_data (trigger: interval[0:00:05], next run at: 2022-08-22 22:24:46 CEST)" executed successfully
+2022-08-22 22:24:42,805 [INFO] Shutting down
+2022-08-22 22:24:42,907 [INFO] Waiting for application shutdown.
+2022-08-22 22:24:42,907 [INFO] Application shutdown complete.
+2022-08-22 22:24:42,908 [INFO] Finished server process [12842]
+2022-08-22 22:25:03,794 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:25:03,794 [INFO] Scheduler started
+2022-08-22 22:25:03,798 [INFO] Started server process [12890]
+2022-08-22 22:25:03,798 [INFO] Waiting for application startup.
+2022-08-22 22:25:03,799 [INFO] Application startup complete.
+2022-08-22 22:25:03,799 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:25:15,864 [INFO] Shutting down
+2022-08-22 22:25:15,965 [INFO] Waiting for application shutdown.
+2022-08-22 22:25:15,966 [INFO] Application shutdown complete.
+2022-08-22 22:25:15,967 [INFO] Finished server process [12890]
+2022-08-22 22:30:27,335 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:30:27,335 [INFO] Scheduler started
+2022-08-22 22:30:27,339 [INFO] Started server process [13150]
+2022-08-22 22:30:27,339 [INFO] Waiting for application startup.
+2022-08-22 22:30:27,340 [INFO] Application startup complete.
+2022-08-22 22:30:27,340 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:30:48,464 [INFO] Shutting down
+2022-08-22 22:30:48,567 [INFO] Waiting for application shutdown.
+2022-08-22 22:30:48,568 [INFO] Application shutdown complete.
+2022-08-22 22:30:48,568 [INFO] Finished server process [13150]
+2022-08-22 22:31:04,570 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:31:04,570 [INFO] Scheduler started
+2022-08-22 22:31:04,577 [INFO] Started server process [13202]
+2022-08-22 22:31:04,577 [INFO] Waiting for application startup.
+2022-08-22 22:31:04,577 [INFO] Application startup complete.
+2022-08-22 22:31:04,578 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:31:07,895 [INFO] Shutting down
+2022-08-22 22:31:07,998 [INFO] Waiting for application shutdown.
+2022-08-22 22:31:07,999 [INFO] Application shutdown complete.
+2022-08-22 22:31:07,999 [INFO] Finished server process [13202]
+2022-08-22 22:31:49,229 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:31:49,230 [INFO] Scheduler started
+2022-08-22 22:31:49,234 [INFO] Started server process [13253]
+2022-08-22 22:31:49,234 [INFO] Waiting for application startup.
+2022-08-22 22:31:49,234 [INFO] Application startup complete.
+2022-08-22 22:31:49,234 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:31:53,461 [INFO] Shutting down
+2022-08-22 22:31:53,562 [INFO] Waiting for application shutdown.
+2022-08-22 22:31:53,563 [INFO] Application shutdown complete.
+2022-08-22 22:31:53,563 [INFO] Finished server process [13253]
+2022-08-22 22:32:46,200 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:32:46,200 [INFO] Scheduler started
+2022-08-22 22:32:46,204 [INFO] Started server process [13302]
+2022-08-22 22:32:46,205 [INFO] Waiting for application startup.
+2022-08-22 22:32:46,205 [INFO] Application startup complete.
+2022-08-22 22:32:46,205 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:32:49,022 [INFO] Shutting down
+2022-08-22 22:32:49,124 [INFO] Waiting for application shutdown.
+2022-08-22 22:32:49,125 [INFO] Application shutdown complete.
+2022-08-22 22:32:49,126 [INFO] Finished server process [13302]
+2022-08-22 22:32:59,921 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:32:59,922 [INFO] Scheduler started
+2022-08-22 22:32:59,926 [INFO] Started server process [13386]
+2022-08-22 22:32:59,926 [INFO] Waiting for application startup.
+2022-08-22 22:32:59,926 [INFO] Application startup complete.
+2022-08-22 22:32:59,926 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:33:20,634 [INFO] Shutting down
+2022-08-22 22:33:20,735 [INFO] Waiting for application shutdown.
+2022-08-22 22:33:20,736 [INFO] Application shutdown complete.
+2022-08-22 22:33:20,737 [INFO] Finished server process [13386]
+2022-08-22 22:33:21,844 [INFO] Added job "fetch_data" to job store "default"
+2022-08-22 22:33:21,845 [INFO] Scheduler started
+2022-08-22 22:33:21,849 [INFO] Started server process [13446]
+2022-08-22 22:33:21,849 [INFO] Waiting for application startup.
+2022-08-22 22:33:21,849 [INFO] Application startup complete.
+2022-08-22 22:33:21,850 [INFO] Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2022-08-22 22:33:25,572 [INFO] Shutting down
+2022-08-22 22:33:25,674 [INFO] Waiting for application shutdown.
+2022-08-22 22:33:25,674 [INFO] Application shutdown complete.
+2022-08-22 22:33:25,675 [INFO] Finished server process [13446]

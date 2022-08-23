@@ -1,0 +1,10 @@
+pydantic
+instagram_private_api
+mysql-connector-python
+sqlalchemy
+unidecode
+uvicorn
+python-dotenv
+fastapi
+easyocr
+apscheduler
