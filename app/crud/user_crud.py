@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from models import user_model
 from schemas import user_schema
-from datetime import datetime
 from typing import Optional
 
 

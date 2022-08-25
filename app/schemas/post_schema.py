@@ -4,6 +4,11 @@ from schemas import media_schema, user_schema
 from datetime import datetime
 
 
+class PostGenerate(BaseModel):
+    user_ids: Optional[List[int]] = Field(None, example=[1, 2, 3])
+    after: Optional[datetime] = Field(None, example="2022-08-25T08:00:00")
+
+
 class PostSubmit(BaseModel):
     id: str = Field(..., example="2897982355577570962")
     ad_status_id: int = Field(..., example=1)

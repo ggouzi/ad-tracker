@@ -5,7 +5,8 @@ import json
 import codecs
 import datetime
 
-def connect():
+
+def connect(login, password):
     try:
         from instagram_private_api import (
             Client, ClientError, ClientLoginError,
@@ -54,7 +55,7 @@ def connect():
 
             # login new
             api = Client(
-                settings.env.CRAWLER_INSTAGRAM_LOGIN, settings.env.CRAWLER_INSTAGRAM_PASSWORD,
+                login, password,
                 on_login=lambda x: onlogin_callback(x, cookie_file))
         else:
             with open(cookie_file) as file_data:
@@ -64,7 +65,7 @@ def connect():
             device_id = cached_settings.get('device_id')
             # reuse auth settings
             api = Client(
-                settings.env.CRAWLER_INSTAGRAM_LOGIN, settings.env.CRAWLER_INSTAGRAM_PASSWORD,
+                login, password,
                 settings=cached_settings)
 
     except (ClientCookieExpiredError, ClientLoginRequiredError) as e:
@@ -73,7 +74,7 @@ def connect():
         # Login expired
         # Do relogin but use default ua, keys and such
         api = Client(
-            settings.env.CRAWLER_INSTAGRAM_LOGIN, settings.env.CRAWLER_INSTAGRAM_PASSWORD,
+            login, password,
             device_id=device_id,
             on_login=lambda x: onlogin_callback(x, cookie_file))
 
@@ -92,4 +93,5 @@ def connect():
     print('Cookie Expiry: {0!s}'.format(datetime.datetime.fromtimestamp(cookie_expiry).strftime('%Y-%m-%dT%H:%M:%SZ')))
     return api
 
-INSTAGRAM_API = connect()
+
+INSTAGRAM_API = connect(settings.env.CRAWLER_INSTAGRAM_LOGIN, settings.env.CRAWLER_INSTAGRAM_PASSWORD)

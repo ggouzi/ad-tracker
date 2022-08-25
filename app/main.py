@@ -10,6 +10,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.openapi.docs import get_redoc_html
 from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import http_exception_handler
+from fastapi.middleware.cors import CORSMiddleware
 
 import datetime
 import settings
@@ -20,7 +21,7 @@ from crud import user_crud, post_crud, media_crud
 from instagram_api_wrapper import user_wrapper, post_wrapper
 from schemas import media_schema
 from db.database import get_db
-from api import posts_routes, users_routes
+from api import medias_routes, posts_routes, users_routes
 from cron import scheduler_cron
 import launch
 
@@ -49,6 +50,15 @@ app = FastAPI(
     openapi_url=None
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.exception_handler(CustomException)
 async def radis_exception_handler(request: Request, exception: CustomException):
     ex = HTTPException(
@@ -58,10 +68,14 @@ async def radis_exception_handler(request: Request, exception: CustomException):
     logging.error(exception.info)
     return await http_exception_handler(request, ex)
 
-INSTAGRAM_API = launch.connect()
+
+app.include_router(medias_routes.router)
 app.include_router(posts_routes.router)
 app.include_router(users_routes.router)
 scheduler_cron.sched.start()
+
+# Mount static files for terms & conditions and privacy statements
+app.mount("/", StaticFiles(directory="static/"))
 
 
 if __name__ == "__main__":

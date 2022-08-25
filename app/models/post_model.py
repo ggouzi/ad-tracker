@@ -23,4 +23,6 @@ class Post(Base):
     expiring_at = Column(DateTime, nullable=True)
 
     def __str__(self):
-        return f"ID: {self.id}\nCode: {self.code}\ntaken_at: {self.taken_at}\nLocation: {self.location}\nis_paid_partnership: {self.is_paid_partnership}\nuser_id: {self.user_id}\nDescription: {self.description}\n"
+        return f"""ID: {self.id}\nCode: {self.code}\ntaken_at: {self.taken_at}
+        \nLocation: {self.location}
+        \nis_paid_partnership: {self.is_paid_partnership}\nuser_id: {self.user_id}\nDescription: {self.description}\n"""

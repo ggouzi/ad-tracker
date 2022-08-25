@@ -1,0 +1,232 @@
+<html>
+   <head>
+      <title>2- Admin Generate</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="custom.css">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+   </head>
+   <body>
+      <header>
+         <div class="collapse bg-dark" id="navbarHeader">
+            <div class="container">
+               <div class="row">
+                  <div class="col-sm-8 col-md-7 py-4">
+                     <h4 class="text-white">About</h4>
+                     <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+                  </div>
+                  <div class="col-sm-4 offset-md-1 py-4">
+                     <h4 class="text-white">Contact</h4>
+                     <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Follow on Twitter</a></li>
+                        <li><a href="#" class="text-white">Like on Facebook</a></li>
+                        <li><a href="#" class="text-white">Email me</a></li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="navbar navbar-dark bg-dark box-shadow">
+            <div class="container d-flex justify-content-between">
+               <a href="#" class="navbar-brand d-flex align-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                     <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <strong>Admin</strong>
+               </a>
+               <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                  </button> -->
+            </div>
+         </div>
+      </header>
+      <main role="main">
+         <section class="jumbotron text-center">
+            <div class="login">
+               <div class="row">
+                  <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                     <div class="card border-0 shadow rounded-3 my-5">
+                        <div class="card-body p-4 p-sm-5">
+                           <form>
+                              <div class="form-floating mb-3">
+                                 <input type="email" class="form-control" id="floatingInput" placeholder="Username">
+                              </div>
+                              <div class="form-floating mb-3">
+                                 <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                              </div>
+                              <div class="d-grid">
+                                 <button type="button" class="btn btn-primary text-uppercase fw-bold" id="login">Login</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <div class="row">
+            <div class="container">
+              <div class="row">
+                <input type="text" id="datepicker" style="margin:50px auto; display:block;">
+              </div>
+              <div class="row">
+                <select id="userIdInput" class="form-select" style="margin:50px auto; display:block;">
+                <option id="all">All</option></select>
+              </div>
+              <div class="row">
+                <button type="button" class="btn btn-primary" id="launch" style="margin:50px auto; display:block;">Fetch</button>
+              </div>
+               <div id="container" class="row"></div>
+            <div class="row">
+               <button type="button" class="btn btn-primary" id="submit" style="margin:50px auto; display:block;">Submit</button>
+            </div>
+         </div>
+         </div>
+      </main>
+   </body>
+   <script type="application/javascript">
+    $('#datepicker').datepicker({
+      dateFormat: 'dd/mm/yy'
+    });
+      $('#datepicker').datepicker( "setDate" , "-1d" );
+
+      var settings = {
+        "url": "users",
+        "method": "GET"
+      };
+
+      var dataUsers = null;
+      $.ajax(settings).done(function (users) {
+        dataUsers = users;
+        console.log(users);
+
+        for (var i =0; i<users.length; i++) {
+          $('#userIdInput').append('<option id="'+ users[i].id+'">'+ users[i].fullname+ '</option>');
+        }
+      });
+
+       $("#launch").click(function() {
+
+         days = $("#daysInput").val();
+         $('#container').empty();
+         user_id = $("#userIdInput").find("option:selected").attr('id');
+         after_date = $("#datepicker").datepicker('getDate');
+         after_date_iso = after_date.toISOString();
+         url = "posts?after=" + after_date_iso + "&user_id=" + user_id
+         if (user_id == "all") {
+           url = "posts?after=" + after_date_iso
+         }
+         // Do the GET request
+         var settings = {
+           "url": url,
+           "method": "GET"
+         };
+
+         var data = null;
+         $.ajax(settings).done(function (response) {
+           console.log(response);
+           data = response["posts"]
+           BORDER_SIZE="10px";
+
+           users = []
+           for (var i=0; i<data.length; i++) {
+               post = data[i];
+               medias = post["medias"]
+               user = {id: post.user.id, fullname: post.user.fullname};
+               if (!users.some(e => e.id == user.id) ) {
+                 users.push(user);
+               }
+               for (var j=0; j<medias.length; j++) {
+                 var img =  medias[j]
+
+                 image = $('<img>', {id: "img-" + img.id, src: img.content_url})
+
+                 var div = $("<div>", {id: img.id, "class": "col-md-3 shadow p-3 mb-5 rounded insideDiv"});
+                 var div2 = $("<div>", {"class": "container"});
+                 div2.append($('<span>', {text: post.id + " - " + post.description, class: "caption"}));
+
+                 var div3 = $("<div>", {"class": "form-check"});
+                 var checkbox =  $('<input>', {type: "form-check-input", type: "checkbox", name: post.id, image_id: img.id, user_id: post.user.id });
+                 checkbox.attr("checked", false);
+                 div3.append(checkbox);
+                 div3.append($('<label>', {class: "form-check-label", for: "select_" + post.id, text: "Select"}));
+                 div2.append(div3);
+                 div.append(image);
+                 div.append(div2);
+
+
+                 $("#container").append(div);
+               }
+           }
+         });
+       });
+
+
+      var access_token=null;
+
+      $("#login").click(function() {
+          // TODO: Get access token
+
+      });
+
+      $( "#submit" ).click(function() {
+          // if (access_token == null) {
+          //     alert("Error: No auth");
+          // }
+          // else {
+              var image_ids = [];
+              $('.form-check input[type=checkbox]:checked').each(function () {
+                  image_ids.push( $(this).attr("image_id"));
+              });
+
+              var settings = {
+                "url": "medias/merge",
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "method": "POST",
+                "data": JSON.stringify(image_ids)
+              };
+
+              $.ajax(settings).done(function (responseMerge) {
+                console.log(responseMerge);
+
+                after_date = $("#datepicker").datepicker('getDate');
+                after_date_iso = after_date.toISOString();
+
+                user_id = $("#userIdInput").find("option:selected").attr('id');
+
+                var data = {"after": after_date_iso, "user_ids": [user_id]}
+                if (user_id == "all") {
+                  data = {"after": after_date_iso}
+                }
+
+                var settings = {
+                  "url": "posts/generate",
+                  "method": "POST",
+                  "headers": {
+                    "Content-Type": "application/json"
+                  },
+                  "data": JSON.stringify(data),
+                };
+
+                $.ajax(settings).done(function (response) {
+                  console.log(response);
+                  alert(JSON.stringify(response));
+                });
+
+
+                window.open(responseMerge["filename"], '_blank');
+
+              });
+          // }
+          // Do the PUT request
+
+      });
+
+
+   </script>
+</html>

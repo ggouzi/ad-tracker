@@ -2,24 +2,31 @@ from sqlalchemy.orm import Session
 from models import post_model
 from schemas import post_schema
 from datetime import datetime
-from typing import Optional
+from typing import List
 
 
-def get_post(db: Session, id: str, type: Optional[str] = None):
+def get_post(db: Session, id: str, type: str = None):
     query = db.query(post_model.Post)
     if type:
         query = query.filter(post_model.Post.type == type)
     return query.filter(post_model.Post.id == id).first()
 
 
-def list_posts(db: Session, user_id: Optional[int] = None, type: Optional[str] = None, submitted: Optional[bool] = None):
+def list_posts(db: Session, user_ids: List[int] = [], type: str = None, submitted: bool = None, after: datetime = None, before: datetime = None, ad_status_id: List[int] = None):
     query = db.query(post_model.Post)
-    if user_id:
-        query = query.filter(post_model.Post.user_id == user_id)
+    if user_ids is not None and len(user_ids) > 0:
+        query = query.filter(post_model.Post.user_id.in_(user_ids))
     if type:
         query = query.filter(post_model.Post.type == type)
     if submitted is not None:
         query = query.filter(post_model.Post.submitted == submitted)
+    if after is not None:
+        query = query.filter(post_model.Post.taken_at >= after)
+    if before is not None:
+        query = query.filter(post_model.Post.taken_at <= before)
+    if ad_status_id is not None:
+        status_ids = [s for s in ad_status_id]
+        query = query.filter(post_model.Post.ad_status_id.in_(status_ids))
     return query.all()
 
 
