@@ -1,6 +1,7 @@
 import traceback
 from schemas import user_schema
 
+
 def get_user(api, username):
     try:
         user = api.username_info(username)["user"]
@@ -16,6 +17,7 @@ def get_user(api, username):
                 is_private=user["is_private"]
         )
         return userObj
-    except:
+    except Exception as e:
+        print(str(e))
         print(traceback.format_exc())
         return None
