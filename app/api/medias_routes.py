@@ -5,7 +5,6 @@ from crud import media_crud
 from schemas import media_schema
 from repository import media_repository
 from db.database import get_db
-from typing import List
 from utils.status import Status, get_responses
 from utils import merger
 import exceptions.CustomException
@@ -20,11 +19,11 @@ async def get_merged_image(filename: str, request: Request, db: Session = Depend
 
 
 @router.post("/medias/merge", responses=get_responses([200, 404, 500]), tags=["Medias"], description="Generate image")
-def generate_image(media_ids: List[str], request: Request, db: Session = Depends(get_db)):
+def generate_image(medias_merge: media_schema.MediaMerge, request: Request, db: Session = Depends(get_db)):
 
     rawListImages = []
 
-    for media_id in media_ids:
+    for media_id in medias_merge.media_ids:
         db_media = media_crud.get_media(db=db, id=media_id)
         if db_media is None:
             raise exceptions.CustomException.CustomException(
@@ -36,10 +35,10 @@ def generate_image(media_ids: List[str], request: Request, db: Session = Depends
         rawListImages.append(merger.get_image_from_url(db_media.content_url))
 
     # Generate image
-    image_name = merger.merge_image_list(rawListImages)
+    filenames = merger.merge_image_list(rawListImages, same_size=medias_merge.same_size, number_images=medias_merge.number_images)
     return JSONResponse(
         status_code=200,
-        content={"filename": image_name}
+        content={"filenames": filenames}
     )
 
 

@@ -188,7 +188,10 @@
                   "Content-Type": "application/json"
                 },
                 "method": "POST",
-                "data": JSON.stringify(image_ids)
+                "data": JSON.stringify({
+                  "media_ids": image_ids,
+                  "same_size": false,
+                  "number_images": 1})
               };
 
               $.ajax(settings).done(function (responseMerge) {
@@ -218,8 +221,10 @@
                   alert(JSON.stringify(response));
                 });
 
-
-                window.open(responseMerge["filename"], '_blank');
+                var filenames = responseMerge["filenames"]
+                for (var i=0; i<filenames.length; i++) {
+                  window.open(filenames[i], '_blank');
+                }
 
               });
           // }

@@ -6,5 +6,7 @@ unidecode
 uvicorn
 python-dotenv
 fastapi
-easyocr
 apscheduler
+boto3
+requests
+Pillow

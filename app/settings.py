@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 	AWS_ACCESS_KEY_ID: str
 
 	class Config:
-		env_file = "../.env"
+		env_file = ".env"
 
 
 env = Settings()

@@ -3,6 +3,7 @@ from PIL import Image
 from urllib.request import Request, urlopen
 from datetime import datetime
 import traceback
+import time
 
 
 def get_image_from_url(url):
@@ -18,9 +19,11 @@ def get_image_from_url(url):
 
 
 def resize(img, basewidth=300):
-	wpercent = (basewidth/float(img.size[0]))
-	hsize = int((float(img.size[1])*float(wpercent)))
-	img = img.resize((basewidth,hsize), Image.Resampling.LANCZOS)
+	if img is None:
+		return None
+	wpercent = (basewidth / float(img.size[0]))
+	hsize = int((float(img.size[1]) * float(wpercent)))
+	img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
 	return img
 
 
@@ -42,15 +45,17 @@ def get_concat_v_blank(im1, im2, color=(0, 0, 0)):
 	return dst
 
 
-def concat_multi(im_list, limit_h):
+def concat_multi(im_list, limit_h, same_size):
 	t, h = [], []
+	orig_limit_h = limit_h
+	print(limit_h)
 	for idx, im in enumerate(im_list):
 		if idx < limit_h:
 			h.append(resize(im))
 		else:
 			t.append(h)
 			h = [im]
-			limit_h += limit_h
+			limit_h += orig_limit_h
 	t.append(h)
 
 	# Concat horizontally by line
@@ -63,14 +68,19 @@ def concat_multi(im_list, limit_h):
 
 	# Concat vertically by concatenated-line & resize last line to fit previous lines width
 	_im, width = None, None
-	for idx, im in enumerate(result):
-		current_width = im.size[0]
-		if width is None:
-			width = current_width
-		if current_width != width:
-			_im = get_concat_v_blank(_im, resize(im, width), False)
-		else:
-			_im = get_concat_v_blank(_im, im, False)
+
+	if not same_size:
+		for idx, im in enumerate(result):
+			current_width = im.size[0]
+			if width is None:
+				width = current_width
+			if current_width != width:
+				_im = get_concat_v_blank(_im, resize(im, width), False)
+			else:
+				_im = get_concat_v_blank(_im, im, False)
+	else:
+		for im in result:
+			_im = get_concat_v_blank(_im, resize(im), False)
 	return _im
 
 
@@ -81,7 +91,7 @@ def nearest_square(limit):
 		return 2
 	if limit == 5:
 		return 3
-	available_limits = [2,3,4,5]
+	available_limits = [2, 3, 4, 5]
 	sq = (limit ** 0.5)
 	for i in available_limits:
 		if sq % i == 0:
@@ -89,7 +99,7 @@ def nearest_square(limit):
 
 	min_i = 1
 
-	for i in range(2, int(sq)+2 ):
+	for i in range(2, int(sq) + 2):
 		if (limit % i) >= min_i:
 			min_i = i
 	if min_i <= 2:
@@ -102,7 +112,13 @@ def generate_filename(suffix, extension):
 	return f"medias/output/{suffix}_{seed}.{extension}"
 
 
-def merge_image_list(rawList):
+def getSublists(lst, n):
+	subListLength = len(lst) // n
+	for i in range(0, len(lst), subListLength):
+		yield lst[i:i + subListLength]
+
+
+def merge_image_list(rawList, same_size, number_images):
 	list_images = []
 
 	for l in rawList:
@@ -111,9 +127,19 @@ def merge_image_list(rawList):
 	list_images.sort(key=lambda x: x.size[0])
 	limit_h = nearest_square(len(list_images))
 
-	filename = generate_filename(suffix="merged", extension="png")
+	if number_images is None:
+		number_images = 1
+
+	if same_size is None:
+		same_size = True
+
+	filenames = []
 	if len(list_images) > 0:
-		concat_multi(list_images, limit_h).save(filename)
-		print(f"Merge images in {filename}")
-		return filename
-	return None
+		lists_images = list(getSublists(list_images, number_images))
+		for l in lists_images:
+			filename = generate_filename(suffix="merged", extension="png")
+			concat_multi(l, limit_h, same_size).save(filename)
+			time.sleep(1)
+			print(f"Merge images in {filename}")
+			filenames.append(filename)
+	return filenames

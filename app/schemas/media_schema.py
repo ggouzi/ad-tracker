@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 
@@ -19,6 +19,15 @@ class MediaCreate(MediaCommon):
 
 
 class Media(MediaCreate):
+
+    class Config:
+        orm_mode = True
+
+
+class MediaMerge(BaseModel):
+    media_ids: List[int] = Field(..., example=[1, 2, 3])
+    same_size: Optional[bool] = Field(None, example=True)
+    number_images: Optional[int] = Field(None, example=1)
 
     class Config:
         orm_mode = True
