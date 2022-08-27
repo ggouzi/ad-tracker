@@ -57,24 +57,25 @@ def delete_old_medias():
 
     db.close()
 
+
 # Fetch new reels and posts for each user
-# # @sched.scheduled_job('cron', hour='7')
-# # @sched.scheduled_job('interval', seconds=5)
+# @sched.scheduled_job('cron', hour='7')
+# @sched.scheduled_job('interval', seconds=5)
 # def extract_text_from_post():
 #     print("Starting cron to apply OCR on medias...")
 #
 #     db = SessionLocal()
 #
-#     db_posts = post_crud.list_posts(db=db, submitted=False)
+#     db_posts = post_crud.list_posts(db=db, submitted=True)
 #     for db_post in db_posts:
 #         db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
 #         for db_media in db_medias:
 #             if db_media.ocr_text is not None:
 #                 continue
 #             print(f"Fetching {db_media.content_url}")
-#             ocr_text = helper.extract_text(db_media.content_url)
+#             ocr_text = post_repository.extract_text(db_media.content_url)
 #             if ocr_text is None:
 #                 continue
 #             print(f"Set text on {db_media.id}")
-#             db_media.set_ocr_text(ocr_text)
+#             db_media = media_crud.set_ocr_text(db=db, media_id=db_media.id, ocr_text=ocr_text)
 #     db.close()

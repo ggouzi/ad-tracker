@@ -104,7 +104,12 @@
 
               var div = $("<div>", {id: img.id, "class": "col-md-3 shadow p-3 mb-5 rounded insideDiv"});
               var div2 = $("<div>", {"class": "container"});
-              div2.append($('<span>', {text: post.id + " - " + post.description, class: "caption"}));
+              if (post.type == 'reel') {
+                div2.append($('<span>', {text: img.id + " - " + img.ocr_text, class: "caption"}));
+              }
+              else {
+                div2.append($('<span>', {text: img.id + " - " + post.description, class: "caption"}));
+              }
 
               var div3 = $("<div>", {"class": "form-check"});
               var ad_checkbox = $('<input>', {type: "form-check-input", type: "radio", name: post.id, "id": "ad_" + post.id, ad_status: 0, image_id: img.id})

@@ -1,32 +1,20 @@
 # FastAPI imports
-from fastapi import Depends, FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.openapi.utils import get_openapi
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.openapi.docs import get_redoc_html
-from fastapi.exceptions import RequestValidationError
-from fastapi.exception_handlers import http_exception_handler
-from fastapi.middleware.cors import CORSMiddleware
 
-import datetime
 import settings
 import uvicorn
 import logging
 
-from crud import user_crud, post_crud, media_crud
-from instagram_api_wrapper import user_wrapper, post_wrapper
-from schemas import media_schema
-from db.database import get_db
 from api import medias_routes, posts_routes, users_routes
 from cron import scheduler_cron
-import launch
 
 from starlette.responses import JSONResponse
-from logging.handlers import RotatingFileHandler
 from exceptions.CustomException import CustomException
 
 # LOGGING_FILE = "logs/system.log"
@@ -67,6 +55,39 @@ async def radis_exception_handler(request: Request, exception: CustomException):
     )
     logging.error(exception.info)
     return await http_exception_handler(request, ex)
+
+
+# Docs
+@app.get("/openapi.json", include_in_schema=False)
+async def get_open_api_endpoint():
+    # db_user = user_crud.check_authentication(db, email=credentials.username, password=credentials.password)
+    # if not db_user:
+    #     raise CustomException(db=db, status_code=401, detail='bad_username_password', info=f'Cannot find activated User with email {credentials.username} and specified password', language='fr-FR')
+
+    openapi_schema = get_openapi(
+        title="Instagram Ad Tracker Documentation API",
+        version="0.1",
+        routes=app.routes,
+        description="Postman Collection: https://www.getpostman.com/collections/d70cb199822c476eb4b0",
+        openapi_version="3.0.2",
+    )
+
+    openapi_schema["info"]["x-logo"] = {
+        "url": f"https://media{settings.env.env}.leradis.io/radis.jpeg"
+    }
+    app.openapi_schema = openapi_schema
+    return JSONResponse(openapi_schema)
+
+
+@app.get("/docs", include_in_schema=False)
+async def get_documentation():
+    return get_redoc_html(openapi_url="/openapi.json", title="docs")
+
+
+@app.get("/", include_in_schema=False)
+async def redirect():
+    response = RedirectResponse(url='/radis/docs')
+    return response
 
 
 app.include_router(medias_routes.router)

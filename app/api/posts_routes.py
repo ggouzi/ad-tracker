@@ -8,7 +8,6 @@ from db.database import get_db
 from datetime import datetime
 from utils.status import get_responses
 import exceptions.CustomException
-from datetime import datetime
 from typing import Optional
 
 
@@ -34,7 +33,7 @@ def list_non_submitted_posts(request: Request, db: Session = Depends(get_db)):
 
 
 @router.get("/posts/{username}/fetch", response_model=post_schema.PostResponseListMedia, responses=get_responses([200, 404, 500]), tags=["Posts"], description="FetchPosts from username")
-def fetch_posts_from_username(username: str, request: Request, db: Session = Depends(get_db)):
+def fetch_posts_from_username(username: str, ocr: bool, request: Request, db: Session = Depends(get_db)):
 
     db_user = user_crud.get_user(db=db, username=username)
     if db_user is None:
@@ -45,7 +44,7 @@ def fetch_posts_from_username(username: str, request: Request, db: Session = Dep
             info=f"User {username} not found"
         )
 
-    post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=None)
+    post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
 
     post_responses = []
     db_posts = post_crud.list_posts(db=db, user_ids=[db_user.id])
@@ -57,13 +56,13 @@ def fetch_posts_from_username(username: str, request: Request, db: Session = Dep
 
 
 @router.get("/posts/fetch", response_model=post_schema.PostResponseListMedia, responses=get_responses([200, 500]), tags=["Posts"], description="Fetch Posts for all users")
-def fetch_posts_from_all_users(request: Request, db: Session = Depends(get_db)):
+def fetch_posts_from_all_users(request: Request, ocr: bool, db: Session = Depends(get_db)):
 
     db_users = user_crud.list_users(db=db)
     post_responses = []
 
     for db_user in db_users:
-        post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=None)
+        post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
 
         db_posts = post_crud.list_posts(db=db, user_ids=[db_user.id])
         for db_post in db_posts:
@@ -71,6 +70,26 @@ def fetch_posts_from_all_users(request: Request, db: Session = Depends(get_db)):
             db_post.medias = db_medias
             post_responses.append(db_post)
     return post_schema.PostResponseListMedia(posts=post_responses)
+
+
+@router.get("/posts", response_model=post_schema.PostResponseList, responses=get_responses([200, 404, 500]), tags=["Posts"], description="Return posts of the last n days")
+def list_posts(request: Request, db: Session = Depends(get_db), after: Optional[datetime] = None, user_id: Optional[int] = None):
+
+    if user_id is None:
+        user_id = None
+    else:
+        user_id = [user_id]
+    db_posts = post_crud.list_posts(db=db, submitted=True, after=after, ad_status_id=AD_STATUSES, user_ids=user_id)
+
+    post_responses = []
+    for db_post in db_posts:
+        db_user = user_crud.get_user(db=db, id=db_post.user_id)
+        db_medias = media_crud.lists_medias(db=db, post_id=db_post.id, limit=1)
+        db_post.user = db_user
+        db_post.medias = db_medias
+        post_responses.append(db_post)
+
+    return post_schema.PostResponseList(posts=post_responses)
 
 
 @router.patch("/posts/submit", response_model=post_schema.PostResponseList, responses=get_responses([200, 404, 500]), tags=["Posts"], description="Submit Posts")
@@ -102,7 +121,7 @@ def submit_posts(posts: post_schema.PostSubmitList, request: Request, db: Sessio
 @router.post("/posts/generate", responses=get_responses([200, 404, 500]), tags=["Posts"], description="Generate message")
 def generate_image(post_generate: post_schema.PostGenerate, request: Request, db: Session = Depends(get_db)):
 
-    db_posts = post_crud.list_posts(db=db, submitted=True, after=post_generate.after, ad_status_id=AD_STATUSES, user_ids=post_generate.user_ids)
+    db_posts = post_crud.list_posts(db=db, submitted=True, after=post_generate.after, before=post_generate.before, ad_status_id=AD_STATUSES, user_ids=post_generate.user_ids)
 
     postsMap = {}
     for db_post in db_posts:
@@ -130,23 +149,3 @@ def generate_image(post_generate: post_schema.PostGenerate, request: Request, db
 
     # Generate image
     return Status(detail=result)
-
-
-@router.get("/posts", response_model=post_schema.PostResponseList, responses=get_responses([200, 404, 500]), tags=["Posts"], description="Return posts of the last n days")
-def list_posts(request: Request, db: Session = Depends(get_db), after: Optional[datetime] = None, user_id: Optional[int] = None):
-
-    if user_id is None:
-        user_id = None
-    else:
-        user_id = [user_id]
-    db_posts = post_crud.list_posts(db=db, submitted=True, after=after, ad_status_id=AD_STATUSES, user_ids=user_id)
-
-    post_responses = []
-    for db_post in db_posts:
-        db_user = user_crud.get_user(db=db, id=db_post.user_id)
-        db_medias = media_crud.lists_medias(db=db, post_id=db_post.id, limit=1)
-        db_post.user = db_user
-        db_post.medias = db_medias
-        post_responses.append(db_post)
-
-    return post_schema.PostResponseList(posts=post_responses)

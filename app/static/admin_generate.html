@@ -70,7 +70,18 @@
          <div class="row">
             <div class="container">
               <div class="row">
-                <input type="text" id="datepicker" style="margin:50px auto; display:block;">
+                <div>
+                  <label for="datepickerAfter">Après</label>
+                  <input type="text" id="datepickerAfter" style="margin:50px auto; display:block;">
+                </div>
+                  <div>
+                    <label for="datepickerBefore">Avant</label>
+                    <input type="text" id="datepickerBefore" style="margin:50px auto; display:block;">
+                  </div>
+                  <div>
+                    <label for="numberImages">Nombre images</label>
+                    <input type="number" id="numberImages" min="1" max="10" style="margin:50px auto; display:block;">
+                  </div>
               </div>
               <div class="row">
                 <select id="userIdInput" class="form-select" style="margin:50px auto; display:block;">
@@ -88,10 +99,17 @@
       </main>
    </body>
    <script type="application/javascript">
-    $('#datepicker').datepicker({
-      dateFormat: 'dd/mm/yy'
-    });
-      $('#datepicker').datepicker( "setDate" , "-1d" );
+
+      $("#numberImages").val("1");
+
+      $('#datepickerBefore').datepicker({
+        dateFormat: 'dd/mm/yy'
+      });
+       $('#datepickerAfter').datepicker({
+         dateFormat: 'dd/mm/yy'
+       });
+      $('#datepickerAfter').datepicker( "setDate" , "-1d" );
+      $('#datepickerBefore').datepicker( "setDate" , "0d" );
 
       var settings = {
         "url": "users",
@@ -110,20 +128,28 @@
 
        $("#launch").click(function() {
 
-         days = $("#daysInput").val();
          $('#container').empty();
          user_id = $("#userIdInput").find("option:selected").attr('id');
-         after_date = $("#datepicker").datepicker('getDate');
+
+         before_date = $("#datepickerBefore").datepicker('getDate');
+         before_date_iso = before_date.toISOString();
+         after_date = $("#datepickerAfter").datepicker('getDate');
          after_date_iso = after_date.toISOString();
+
          url = "posts?after=" + after_date_iso + "&user_id=" + user_id
          if (user_id == "all") {
-           url = "posts?after=" + after_date_iso
+           url = "posts?after=" + after_date_iso + "&before=" + before_date_iso
          }
          // Do the GET request
          var settings = {
            "url": url,
            "method": "GET"
          };
+
+         var after = $("#datepickerAfter").val();
+         var before = $("#datepickerBefore").val();
+         console.log(after);
+         console.log(before);
 
          var data = null;
          $.ajax(settings).done(function (response) {
@@ -146,8 +172,12 @@
 
                  var div = $("<div>", {id: img.id, "class": "col-md-3 shadow p-3 mb-5 rounded insideDiv"});
                  var div2 = $("<div>", {"class": "container"});
-                 div2.append($('<span>', {text: post.id + " - " + post.description, class: "caption"}));
-
+                 if (post.type == 'reel') {
+                   div2.append($('<span>', {text: img.ocr_text, class: "caption"}));
+                 }
+                 else {
+                   div2.append($('<span>', {text: post.description, class: "caption"}));
+                 }
                  var div3 = $("<div>", {"class": "form-check"});
                  var checkbox =  $('<input>', {type: "form-check-input", type: "checkbox", name: post.id, image_id: img.id, user_id: post.user.id });
                  checkbox.attr("checked", false);
@@ -182,6 +212,8 @@
                   image_ids.push( $(this).attr("image_id"));
               });
 
+              var number_images = $("#numberImages").val();
+
               var settings = {
                 "url": "medias/merge",
                 "headers": {
@@ -190,8 +222,7 @@
                 "method": "POST",
                 "data": JSON.stringify({
                   "media_ids": image_ids,
-                  "same_size": false,
-                  "number_images": 1})
+                  "number_images": number_images})
               };
 
               $.ajax(settings).done(function (responseMerge) {

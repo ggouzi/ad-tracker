@@ -10,3 +10,4 @@ apscheduler
 boto3
 requests
 Pillow
+easyocr

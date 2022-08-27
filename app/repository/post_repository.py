@@ -6,15 +6,14 @@ from schemas import media_schema
 import exceptions.CustomException
 import traceback
 from sqlalchemy.orm import Session
-# import easyocr
-# import traceback
+import easyocr
+import traceback
 from utils import medias
 import os
 from instagram_private_api import ClientChallengeRequiredError
 
 
 COOKIE_FILE = "cookie.json"
-# reader = easyocr.Reader(['fr'], gpu=False)
 
 
 def fetch_posts(db: Session, user_id: int, apply_ocr: bool = None):
@@ -38,7 +37,7 @@ def fetch_posts(db: Session, user_id: int, apply_ocr: bool = None):
         )
 
 
-def fetch_posts_no_error(api, db: Session, user_id: int, apply_ocr: bool = None):
+def fetch_posts_no_error(api, db: Session, user_id: int, apply_ocr: bool = False):
     posts = post_wrapper.fetch_posts_by_user_id(api=api, user_id=user_id)
     for post in posts:
         db_post = post_crud.get_post(db=db, id=post.id)
@@ -62,16 +61,16 @@ def fetch_posts_no_error(api, db: Session, user_id: int, apply_ocr: bool = None)
 
 
 def extract_text(image_url):
-    return None
-    # try:
-    #     RST = reader.readtext(image_url)
-    #     result = ""
-    #     for r in RST:
-    #         text = r[1]
-    #         confidence = r[2]
-    #         if confidence >= 0.5:
-    #             result += f"{text} "
-    #     return None if (result == "") else result.strip()
-    # except Exception as e:
-    #     traceback.print_exc()
-    #     return None
+    try:
+        reader = easyocr.Reader(['fr'], gpu=False)
+        RST = reader.readtext(image_url)
+        result = ""
+        for r in RST:
+            text = r[1]
+            confidence = r[2]
+            if confidence >= 0.5:
+                result += f"{text} "
+        return None if (result == "") else result.strip()
+    except Exception as e:
+        traceback.print_exc()
+        return None

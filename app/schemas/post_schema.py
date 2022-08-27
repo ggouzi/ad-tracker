@@ -6,25 +6,29 @@ from datetime import datetime
 
 class PostGenerate(BaseModel):
     user_ids: Optional[List[int]] = Field(None, example=[1, 2, 3])
-    after: Optional[datetime] = Field(None, example="2022-08-25T08:00:00")
+    after: Optional[datetime] = Field(None, example="2022-08-25T00:00:00")
+    before: Optional[datetime] = Field(None, example="2022-08-26T00:00:00")
 
 
 class PostSubmit(BaseModel):
     id: str = Field(..., example="2897982355577570962")
     ad_status_id: int = Field(..., example=1)
+    description: Optional[str] = Field(None, example="Test")
+    type: str = Field(..., example="post")
+    is_paid_partnership: bool = Field(..., example=1)
+
+    class Config:
+        orm_mode = True
 
 
 class PostBase(PostSubmit):
     submitted: bool = Field(..., example=True)
-    type: str = Field(..., example="post")
     code: str = Field(..., example="Cg3s5kljQaS")
     taken_at: datetime = Field(..., example="2022-10-19T20:35:02")
     location: Optional[str] = Field(None, example="Mykonos, Greece")
     lat: Optional[float] = Field(None, example="43.371493")
     lng: Optional[float] = Field(None, example="1.2808413")
-    is_paid_partnership: bool = Field(..., example=1)
     user_id: int = Field(..., example=6394999216)
-    description: Optional[str] = Field(None, example="Test")
     expiring_at: Optional[datetime] = Field(None, example="2022-10-19T20:35:02")
 
     class Config:
@@ -41,7 +45,7 @@ class Post(PostBase):
         orm_mode = True
 
 
-class PostResponseMedia(PostBase):
+class PostResponseMedia(PostSubmit):
     medias: List[media_schema.MediaResponse]
 
 

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 class MediaCommon(BaseModel):
     post_id: str = Field(..., example="1")
     content_url: str = Field(..., example="https://scontent-cdg2-1.cdninstagram.com/v/t51.2885-15")
+    ocr_text: Optional[str] = Field(None, example="Test")
 
 
 class MediaResponse(MediaCommon):
@@ -26,7 +27,6 @@ class Media(MediaCreate):
 
 class MediaMerge(BaseModel):
     media_ids: List[int] = Field(..., example=[1, 2, 3])
-    same_size: Optional[bool] = Field(None, example=True)
     number_images: Optional[int] = Field(None, example=1)
 
     class Config:

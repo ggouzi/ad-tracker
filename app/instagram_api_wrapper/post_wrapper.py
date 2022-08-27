@@ -1,10 +1,11 @@
-import traceback
 from models import post_model
 from schemas import post_schema
 from utils import helper
 import unidecode
 
-TEXT_TO_FIND = ["#ad", "#sponsorise"]
+TEXT_TO_FIND_ADS_LEGIT = ["#ad", "#sponsorise"]
+TEXT_TO_FIND_ADS_HIDDEN = ["code", "promo", "reduction", "client", "boutique", "euros", "€"]
+TEXT_TO_FIND_ADS_BAD = ["#crypto", "#nft"]
 
 
 def fetch_posts_by_user_id(api, user_id, type=None, count=10):
@@ -69,10 +70,13 @@ def get_content_urls(post):
 
 def analyse_ad_status(post, description):
     # TODO: Work on a decent algorithm to detect ads
-    ad_status_id = 0
     if post.get("is_paid_partnership"):
-        ad_status_id = 2
+        return 2
     if description:
-        if any(s in unidecode.unidecode(description.lower()) for s in TEXT_TO_FIND):
-            ad_status_id = 1
-    return ad_status_id
+        if any(s in unidecode.unidecode(description.lower()) for s in TEXT_TO_FIND_ADS_BAD):
+            return -2
+        if any(s in unidecode.unidecode(description.lower()) for s in TEXT_TO_FIND_ADS_HIDDEN):
+            return -1
+        if any(s in unidecode.unidecode(description.lower()) for s in TEXT_TO_FIND_ADS_LEGIT):
+            return 1
+    return 0

@@ -1,0 +1,11 @@
+version: "3.3"
+
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    container_name: fastapi
+    network_mode: "host"
+    restart: "no"
