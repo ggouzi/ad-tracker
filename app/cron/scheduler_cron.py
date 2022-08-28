@@ -24,7 +24,15 @@ def fetch_data():
 
     db_users = user_crud.list_users(db=db)
     for db_user in db_users:
+        try:
+            post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=True)
+        except Exception as e:
+            print("Error: Cannot fetch posts")
+            print(str(e))
+            db.close()
+            return None
         post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=True)
+        _ = post_repository.set_ad_status_posts_by_user_id(db=db, user_id=db_user.id)
     db.close()
 
 
@@ -59,23 +67,19 @@ def delete_old_medias():
 
 
 # Fetch new reels and posts for each user
-# @sched.scheduled_job('cron', hour='7')
+@sched.scheduled_job('cron', hour='7')
 # @sched.scheduled_job('interval', seconds=5)
-# def extract_text_from_post():
-#     print("Starting cron to apply OCR on medias...")
-#
-#     db = SessionLocal()
-#
-#     db_posts = post_crud.list_posts(db=db, submitted=True)
-#     for db_post in db_posts:
-#         db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
-#         for db_media in db_medias:
-#             if db_media.ocr_text is not None:
-#                 continue
-#             print(f"Fetching {db_media.content_url}")
-#             ocr_text = post_repository.extract_text(db_media.content_url)
-#             if ocr_text is None:
-#                 continue
-#             print(f"Set text on {db_media.id}")
-#             db_media = media_crud.set_ocr_text(db=db, media_id=db_media.id, ocr_text=ocr_text)
-#     db.close()
+def extract_text_from_post():
+    print("Starting cron to apply OCR on medias...")
+
+    db = SessionLocal()
+
+    db_posts = post_repository.set_ad_status_posts_by_user_id(db=db, submitted=False)
+    for db_post in db_posts:
+        if db_post.type == post_model.REEL_TYPE:
+            db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
+            for db_media in db_medias:
+                if db_media.ocr_text is None:
+                    ocr_text = post_repository.extract_text(db_media.content_url)
+                    db_media = media_crud.set_ocr_text(db=db, media_id=db_media.id, ocr_text=ocr_text)
+    db.close()

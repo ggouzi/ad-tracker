@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, Request
 from utils.status import Status
 from schemas import post_schema
+from models import ad_status_model, post_model
 from repository import post_repository
 from crud import post_crud, media_crud, user_crud
 from db.database import get_db
@@ -13,23 +14,33 @@ from typing import Optional
 
 router = APIRouter()
 
-AD_STATUSES = [-2, -1, 1]
+AD_STATUSES = [ad_status_model.AD_STATUS_BAD, ad_status_model.AD_STATUS_HIDDEN, ad_status_model.AD_STATUS_INCORRECT, ad_status_model.AD_STATUS_LEGIT]
 
 
 @router.get("/posts/submit", response_model=post_schema.PostResponseList, responses=get_responses([200, 500]), tags=["Posts"], description="List Posts to submit")
 def list_non_submitted_posts(request: Request, db: Session = Depends(get_db)):
 
-    post_responses = []
+    db_posts = post_repository.set_ad_status_posts_by_user_id(db=db, submitted=False)
     db_posts = post_crud.list_posts(db=db, submitted=False)  # List non-submitted posts
+    db_posts = post_repository.add_medias(db=db, db_posts=db_posts, limit=1)
+    db_posts = post_repository.add_user(db=db, db_posts=db_posts)
+    return post_schema.PostResponseList(posts=db_posts)
+
+
+@router.post("/posts/apply_ocr", response_model=post_schema.PostResponseList, responses=get_responses([200, 500]), tags=["Posts"], description="Apply OCR non-submitted posts")
+def apply_ocr_non_submitted_posts(request: Request, db: Session = Depends(get_db)):
+
+    db_posts = post_repository.set_ad_status_posts_by_user_id(db=db, submitted=False)
     for db_post in db_posts:
-        db_user = user_crud.get_user(db=db, id=db_post.user_id)
-        if not db_user.activated:
-            continue
-        db_medias = media_crud.lists_medias(db=db, post_id=db_post.id, limit=1)
-        db_post.user = db_user
-        db_post.medias = db_medias
-        post_responses.append(db_post)
-    return post_schema.PostResponseList(posts=post_responses)
+        if db_post.type == post_model.REEL_TYPE:
+            db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
+            for db_media in db_medias:
+                if db_media.ocr_text is None:
+                    ocr_text = post_repository.extract_text(db_media.content_url)
+                    db_media = media_crud.set_ocr_text(db=db, media_id=db_media.id, ocr_text=ocr_text)
+    db_posts = post_repository.add_medias(db=db, db_posts=db_posts)
+    db_posts = post_repository.add_user(db=db, db_posts=db_posts)
+    return post_schema.PostResponseList(posts=db_posts)
 
 
 @router.get("/posts/{username}/fetch", response_model=post_schema.PostResponseListMedia, responses=get_responses([200, 404, 500]), tags=["Posts"], description="FetchPosts from username")
@@ -44,15 +55,18 @@ def fetch_posts_from_username(username: str, ocr: bool, request: Request, db: Se
             info=f"User {username} not found"
         )
 
-    post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
-
-    post_responses = []
-    db_posts = post_crud.list_posts(db=db, user_ids=[db_user.id])
-    for db_post in db_posts:
-        db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
-        db_post.medias = db_medias
-        post_responses.append(db_post)
-    return post_schema.PostResponseListMedia(posts=post_responses)
+    try:
+        post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
+    except Exception as e:
+        raise exceptions.CustomException.CustomException(
+            db=db,
+            status_code=500,
+            detail="Internal Server Error",
+            info=f"Error: {str(e)}"
+        )
+    db_posts = post_repository.set_ad_status_posts_by_user_id(db=db, user_id=db_user.id)
+    db_posts_with_medias = post_repository.add_medias(db=db, db_posts=db_posts)
+    return post_schema.PostResponseListMedia(posts=db_posts_with_medias)
 
 
 @router.get("/posts/fetch", response_model=post_schema.PostResponseListMedia, responses=get_responses([200, 500]), tags=["Posts"], description="Fetch Posts for all users")
@@ -62,13 +76,18 @@ def fetch_posts_from_all_users(request: Request, ocr: bool, db: Session = Depend
     post_responses = []
 
     for db_user in db_users:
-        post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
-
-        db_posts = post_crud.list_posts(db=db, user_ids=[db_user.id])
-        for db_post in db_posts:
-            db_medias = media_crud.lists_medias(db=db, post_id=db_post.id)
-            db_post.medias = db_medias
-            post_responses.append(db_post)
+        try:
+            post_repository.fetch_posts(db=db, user_id=db_user.id, apply_ocr=ocr)
+        except Exception as e:
+            raise exceptions.CustomException.CustomException(
+                db=db,
+                status_code=500,
+                detail="Internal Server Error",
+                info=f"Error: {str(e)}"
+            )
+        db_posts = post_repository.set_ad_status_posts_by_user_id(db=db, user_id=db_user.id)
+        db_posts_with_medias = post_repository.add_medias(db=db, db_posts=db_posts)
+        post_responses.extend(db_posts_with_medias)
     return post_schema.PostResponseListMedia(posts=post_responses)
 
 

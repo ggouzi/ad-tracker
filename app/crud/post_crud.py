@@ -58,3 +58,11 @@ def submit_post(db: Session, id: str, ad_status_id: int):
     db.commit()
     db.refresh(db_post)
     return db_post
+
+
+def set_ad_status(db: Session, id: str, ad_status_id: int):
+    db_post = db.query(post_model.Post).filter(post_model.Post.id == id).first()
+    db_post.ad_status_id = ad_status_id
+    db.commit()
+    db.refresh(db_post)
+    return db_post

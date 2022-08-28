@@ -18,7 +18,7 @@ async def get_merged_image(filename: str, request: Request, db: Session = Depend
     return FileResponse(f"medias/merged/{filename}")
 
 
-@router.get("/medias/{media_id}", response_model=media_schema.MediaResponse, responses=get_responses([204, 404, 500]), tags=["Medias"], description="Delete media")
+@router.get("/medias/{media_id}", response_model=media_schema.MediaResponse, responses=get_responses([204, 404, 500]), tags=["Medias"], description="Get media")
 def get_media(media_id: int, request: Request, db: Session = Depends(get_db)):
 
     db_media = media_crud.get_media(db=db, id=media_id)

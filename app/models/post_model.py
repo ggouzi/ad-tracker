@@ -18,7 +18,7 @@ class Post(Base):
     is_paid_partnership = Column(Boolean, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
     description = Column(String, nullable=True)
-    ad_status_id = Column(Integer, nullable=False)
+    ad_status_id = Column(Integer, ForeignKey('ad_statuses.id'))
     submitted = Column(Boolean, nullable=False, default=0)
     expiring_at = Column(DateTime, nullable=True)
 

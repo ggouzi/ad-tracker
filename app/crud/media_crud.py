@@ -43,6 +43,7 @@ def set_ocr_text(db: Session, media_id: int, ocr_text: str):
     db_media.ocr_text = ocr_text
     db.commit()
     db.refresh(db_media)
+    print(f"\nMedia {db_media.id} ocr_text set")
     return db_media
 
 

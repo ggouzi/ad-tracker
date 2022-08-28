@@ -53,6 +53,13 @@ CREATE TABLE IF NOT EXISTS medias (
   CONSTRAINT `media_post_id` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS keywords (
+  id INT(4) UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  keyword VARCHAR(32) NOT NULL,
+  ad_status_id INT(4) NOT NULL,
+  CONSTRAINT `keyword_ad_status_id` FOREIGN KEY (`ad_status_id`) REFERENCES `ad_statuses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 FLUSH PRIVILEGES;
 CREATE USER 'instagram_sponsor_tracker'@'localhost' IDENTIFIED BY 'instagram_sponsor_tracker*$14352!';
 GRANT ALL PRIVILEGES ON *.* TO 'instagram_sponsor_tracker'@'localhost' WITH GRANT OPTION;

@@ -105,10 +105,10 @@
               var div = $("<div>", {id: img.id, "class": "col-md-3 shadow p-3 mb-5 rounded insideDiv"});
               var div2 = $("<div>", {"class": "container"});
               if (post.type == 'reel') {
-                div2.append($('<span>', {text: img.id + " - " + img.ocr_text, class: "caption"}));
+                div2.append($('<span>', {text: img.id + ' - ' + post.user.fullname + " - " + img.ocr_text, class: "caption"}));
               }
               else {
-                div2.append($('<span>', {text: img.id + " - " + post.description, class: "caption"}));
+                div2.append($('<span>', {text: img.id + ' - ' + post.user.fullname + " - " + post.description, class: "caption"}));
               }
 
               var div3 = $("<div>", {"class": "form-check"});

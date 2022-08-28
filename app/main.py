@@ -11,7 +11,7 @@ import settings
 import uvicorn
 import logging
 
-from api import medias_routes, posts_routes, users_routes
+from api import keywords_routes, medias_routes, posts_routes, users_routes
 from cron import scheduler_cron
 
 from starlette.responses import JSONResponse
@@ -90,6 +90,7 @@ async def redirect():
     return response
 
 
+app.include_router(keywords_routes.router)
 app.include_router(medias_routes.router)
 app.include_router(posts_routes.router)
 app.include_router(users_routes.router)
