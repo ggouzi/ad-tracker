@@ -96,11 +96,11 @@
               var img =  medias[j]
 
               image = $('<img>', {id: "img-" + img.id, src: img.content_url})
-              image.click(function(){
-                     $(this).css('width', function(_ , cur){
-                          return cur === '1000px' ? '100%' : '1000px'
-                    });
-                });
+              // image.click(function(){
+              //        $(this).css('width', function(_ , cur){
+              //             return cur === '1000px' ? '100%' : '1000px'
+              //       });
+              //   });
 
               var div = $("<div>", {id: img.id, "class": "col-md-3 shadow p-3 mb-5 rounded insideDiv"});
               var div2 = $("<div>", {"class": "container"});
@@ -112,7 +112,7 @@
               }
 
               var div3 = $("<div>", {"class": "form-check"});
-              var ad_checkbox = $('<input>', {type: "form-check-input", type: "radio", name: post.id, "id": "ad_" + post.id, ad_status: 0, image_id: img.id})
+              var ad_checkbox = $('<input>', {type: "form-check-input", type: "radio", name: post.id, "id": "ad_" + post.id, ad_status: -2, image_id: img.id})
               if (post.ad_status_id == -2) {
                   ad_checkbox.attr("checked", true);
                   image.css(

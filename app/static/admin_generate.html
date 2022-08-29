@@ -103,13 +103,15 @@
       $("#numberImages").val("1");
 
       $('#datepickerBefore').datepicker({
-        dateFormat: 'dd/mm/yy'
+        dateFormat: 'dd/mm/yy',
+        dateonly:true
       });
        $('#datepickerAfter').datepicker({
-         dateFormat: 'dd/mm/yy'
+         dateFormat: 'dd/mm/yy',
+         dateonly:true
        });
-      $('#datepickerAfter').datepicker( "setDate" , "-1d" );
-      $('#datepickerBefore').datepicker( "setDate" , "0d" );
+      $('#datepickerAfter').datepicker( "setDate" , "0d" );
+      $('#datepickerBefore').datepicker( "setDate" , "+1d" );
 
       var settings = {
         "url": "users",
@@ -131,10 +133,17 @@
          $('#container').empty();
          user_id = $("#userIdInput").find("option:selected").attr('id');
 
-         before_date = $("#datepickerBefore").datepicker('getDate');
-         before_date_iso = before_date.toISOString();
-         after_date = $("#datepickerAfter").datepicker('getDate');
-         after_date_iso = after_date.toISOString();
+         var before_date = $("#datepickerBefore").datepicker('getDate');
+         var before_date_utc = Date.UTC(before_date.getFullYear(), before_date.getMonth(),
+                before_date.getDate(), before_date.getHours(),
+                before_date.getMinutes(), before_date.getSeconds());
+        var before_date_iso = (new Date(before_date_utc)).toISOString();
+
+        var after_date = $("#datepickerAfter").datepicker('getDate');
+        var after_date_utc = Date.UTC(after_date.getFullYear(), after_date.getMonth(),
+                after_date.getDate(), after_date.getHours(),
+                after_date.getMinutes(), after_date.getSeconds());
+        var after_date_iso = (new Date(after_date_utc)).toISOString();
 
          url = "posts?after=" + after_date_iso + "&user_id=" + user_id
          if (user_id == "all") {
@@ -148,8 +157,6 @@
 
          var after = $("#datepickerAfter").val();
          var before = $("#datepickerBefore").val();
-         console.log(after);
-         console.log(before);
 
          var data = null;
          $.ajax(settings).done(function (response) {
@@ -179,7 +186,7 @@
                    div2.append($('<span>', {text: img.id + ' - ' + post.user.fullname + ' - ' + post.description, class: "caption"}));
                  }
                  var div3 = $("<div>", {"class": "form-check"});
-                 var checkbox =  $('<input>', {type: "form-check-input", type: "checkbox", name: post.id, image_id: img.id, user_id: post.user.id });
+                 var checkbox =  $('<input>', {type: "form-check-input", type: "checkbox", name: post.id, image_id: img.id, user_id: post.user.id, id: "select-" + img.id});
                  checkbox.attr("checked", false);
                  div3.append(checkbox);
                  div3.append($('<label>', {class: "form-check-label", for: "select_" + post.id, text: "Select"}));
@@ -187,6 +194,16 @@
                  div.append(image);
                  div.append(div2);
 
+                 div.click(function(){
+                        var img_id = $(this).attr('id');
+                        var checkbox = $("#select-" + img_id);
+                        if (checkbox.prop("checked")) {
+                          checkbox.prop("checked", false);
+                        }
+                        else {
+                          checkbox.prop("checked", true);
+                        }
+                   });
 
                  $("#container").append(div);
                }
@@ -228,14 +245,16 @@
               $.ajax(settings).done(function (responseMerge) {
                 console.log(responseMerge);
 
-                after_date = $("#datepicker").datepicker('getDate');
-                after_date_iso = after_date.toISOString();
+                var before_date = $("#datepickerBefore").datepicker('getDate');
+                var before_date_iso = before_date.toISOString();
+                var after_date = $("#datepickerAfter").datepicker('getDate');
+                var after_date_iso = after_date.toISOString();
 
                 user_id = $("#userIdInput").find("option:selected").attr('id');
 
                 var data = {"after": after_date_iso, "user_ids": [user_id]}
                 if (user_id == "all") {
-                  data = {"after": after_date_iso}
+                  data = {"after": after_date_iso, "before": before_date_iso}
                 }
 
                 var settings = {

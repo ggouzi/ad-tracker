@@ -75,28 +75,15 @@ def concat_multi(im_list, limit_h):
 
 
 def nearest_square(limit):
-	print(limit)
-	if limit <= 2:
+	if limit <= 3:
 		return 1
 	if limit <= 4:
 		return 2
 	if limit == 5:
-		return 3
-	# available_limits = [2, 3, 4, 5]
-	sq = (limit ** 0.5)
-	print(sq)
-	# for i in available_limits:
-	# 	if sq % i == 0:
-	# 		return i
+		return 5
 
-	min_i = 1
-
-	for i in range(2, int(sq) + 2):
-		if (limit % i) >= min_i:
-			min_i = i
-	if min_i <= 2:
-		return 3
-	return min_i
+	sq = int((limit ** 0.5))
+	return sq
 
 
 def generate_filename(suffix, extension):

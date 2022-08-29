@@ -10,7 +10,7 @@ from typing import List, Optional
 router = APIRouter()
 
 
-@router.get("/keywords/{keyword_id}", response_model=keyword_schema.Keyword, responses=get_responses([204, 404, 500]), tags=["Keywords"], description="Get keyword")
+@router.get("/keywords/{keyword_id}", response_model=keyword_schema.Keyword, responses=get_responses([204, 404, 500]), tags=["Keywords"], description="Get Keyword")
 def get_keyword(keyword_id: int, request: Request, db: Session = Depends(get_db)):
 
     db_keyword = keyword_crud.get_keyword(db=db, id=keyword_id)
@@ -24,7 +24,7 @@ def get_keyword(keyword_id: int, request: Request, db: Session = Depends(get_db)
     return db_keyword
 
 
-@router.get("/keywords", response_model=List[keyword_schema.Keyword], responses=get_responses([204, 404, 500]), tags=["Keywords"], description="List keywords")
+@router.get("/keywords", response_model=List[keyword_schema.Keyword], responses=get_responses([204, 404, 500]), tags=["Keywords"], description="List Keywords")
 def list_keywords(request: Request, db: Session = Depends(get_db), ad_status_id: Optional[int] = None):
 
     db_keywords = keyword_crud.list_keywords(db=db, ad_status_id=ad_status_id)
@@ -56,7 +56,7 @@ def create_keyword(keyword: keyword_schema.KeywordCreate, request: Request, db: 
     return db_keyword
 
 
-@router.delete("/keywords/{keyword_id}", responses=get_responses([204, 404, 500]), tags=["Keywords"], description="Delete keyword")
+@router.delete("/keywords/{keyword_id}", responses=get_responses([204, 404, 500]), tags=["Keywords"], description="Delete Keyword")
 def delete_keyword(keyword_id: int, request: Request, db: Session = Depends(get_db)):
 
     db_keyword = keyword_crud.get_keyword(db=db, id=keyword_id)

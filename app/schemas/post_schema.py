@@ -10,9 +10,12 @@ class PostGenerate(BaseModel):
     before: Optional[datetime] = Field(None, example="2022-08-26T00:00:00")
 
 
-class PostSubmit(BaseModel):
+class PostSubmittedInput(BaseModel):
     id: str = Field(..., example="2897982355577570962")
     ad_status_id: int = Field(..., example=1)
+
+
+class PostSubmit(PostSubmittedInput):
     description: Optional[str] = Field(None, example="Test")
     type: str = Field(..., example="post")
     is_paid_partnership: bool = Field(..., example=1)
@@ -62,4 +65,4 @@ class PostResponseListMedia(BaseModel):
 
 
 class PostSubmitList(BaseModel):
-    posts: List[PostSubmit]
+    posts: List[PostSubmittedInput]

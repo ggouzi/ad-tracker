@@ -92,13 +92,13 @@ def fetch_posts_from_all_users(request: Request, ocr: bool, db: Session = Depend
 
 
 @router.get("/posts", response_model=post_schema.PostResponseList, responses=get_responses([200, 404, 500]), tags=["Posts"], description="Return posts of the last n days")
-def list_posts(request: Request, db: Session = Depends(get_db), after: Optional[datetime] = None, user_id: Optional[int] = None):
+def list_posts(request: Request, db: Session = Depends(get_db), after: Optional[datetime] = None, before: Optional[datetime] = None, user_id: Optional[int] = None):
 
     if user_id is None:
         user_id = None
     else:
         user_id = [user_id]
-    db_posts = post_crud.list_posts(db=db, submitted=True, after=after, ad_status_id=AD_STATUSES, user_ids=user_id)
+    db_posts = post_crud.list_posts(db=db, submitted=True, after=after, before=before, ad_status_id=AD_STATUSES, user_ids=user_id)
 
     post_responses = []
     for db_post in db_posts:
@@ -138,7 +138,7 @@ def submit_posts(posts: post_schema.PostSubmitList, request: Request, db: Sessio
 
 
 @router.post("/posts/generate", responses=get_responses([200, 404, 500]), tags=["Posts"], description="Generate message")
-def generate_image(post_generate: post_schema.PostGenerate, request: Request, db: Session = Depends(get_db)):
+def generate_text(post_generate: post_schema.PostGenerate, request: Request, db: Session = Depends(get_db)):
 
     db_posts = post_crud.list_posts(db=db, submitted=True, after=post_generate.after, before=post_generate.before, ad_status_id=AD_STATUSES, user_ids=post_generate.user_ids)
 
@@ -148,7 +148,7 @@ def generate_image(post_generate: post_schema.PostGenerate, request: Request, db
             postsMap[db_post.user_id] = []
         postsMap[db_post.user_id].append(db_post)
 
-    result = ""
+    result = "Nombre de posts avec du contenu sponsorisé non/mal signalé #Influencer #instagram #Ad\n\n"
     for user_id in postsMap:
         db_user = user_crud.get_user(db=db, id=user_id)
         db_posts = postsMap[user_id]
@@ -158,13 +158,13 @@ def generate_image(post_generate: post_schema.PostGenerate, request: Request, db
 
         p = "post" if (nb_posts_hidden_or_incorrect == 1) else "posts"
         if nb_posts_hidden_or_incorrect > 0:
-            result += f"User {db_user.username}: {nb_posts_hidden_or_incorrect} {p} avec du contenu sponsorisé non signalé ou mal signalé\n"
+            result += f"{db_user.username}: {nb_posts_hidden_or_incorrect}\n"
         p = "post" if (nb_posts_bad == 1) else "posts"
         if nb_posts_bad > 0:
-            result += f"User {db_user.username}: {nb_posts_bad} {p} avec du contenu sponsorisé malhonnête\n"
+            result += f"{db_user.username}: {nb_posts_bad} {p} avec du contenu sponsorisé malhonnête\n"
         p = "post" if (nb_posts_correct == 1) else "posts"
         if nb_posts_correct > 0:
-            result += f"User {db_user.username}: {nb_posts_correct} {p} avec du contenu sponsorisé correctement signalé\n"
+            result += f"{db_user.username}: {nb_posts_correct} {p} avec du contenu sponsorisé correctement signalé\n"
 
     # Generate image
     return Status(detail=result)
